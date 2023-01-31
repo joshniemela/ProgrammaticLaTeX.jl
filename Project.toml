@@ -1,0 +1,13 @@
+name = "ProgrammaticLaTeX"
+uuid = "53f8dfcc-9206-4eaa-b4f7-d01ec6c295be"
+authors = ["Joshua Niemelä <josh@jniemela.dk> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.8"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
