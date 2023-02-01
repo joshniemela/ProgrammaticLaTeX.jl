@@ -1,12 +1,7 @@
 include("Preamble.jl")
 
 module ProgrammaticLaTeX
-import Preamble
-
 end
-
-using .Preamble
-
 
 preamble = Preamble(
   DocumentClass("article"),

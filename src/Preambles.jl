@@ -1,7 +1,7 @@
 module Preambles
 
 export AbstractDecl, Author, DocumentClass, Title, Package, Preamble
-export build_preamble
+export build_preamble, infer_pkg_deps
 
 using Dates
 using Pipe
@@ -79,21 +79,9 @@ write_decl(package::Package) = "\\usepackage{$(package.pkgname)}"
 build_preamble(declarations) = @pipe declarations .|> write_decl |> join(_, "\n")
 
 
-#=function infer_pkg_deps(content)::Vector{Package}
- FUNCTION SHOULD LOOK AT CONTENT AND INFER WHAT USEPACKAGES TO INCLUDE
-end=#
-
-#=function julia2latex(document::Document)
-    preamble = build_preamble(document.preamble)
-
-    content = "\\begin{document}\n"
-
-    if any(x -> x isa Title, document.preamble)
-        content *= "\\maketitle\n"
-    end
-
-    "$(preamble)\n$(content)\\end{document}"
-end=#
+function infer_pkg_deps(content)::Vector{Package}
+    Vector{Package}()
+end
 
 
 end
