@@ -3,6 +3,10 @@ uuid = "53f8dfcc-9206-4eaa-b4f7-d01ec6c295be"
 authors = ["Joshua Niemelä <josh@jniemela.dk> and contributors"]
 version = "0.1.0"
 
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
+
 [compat]
 julia = "1.8"
 
