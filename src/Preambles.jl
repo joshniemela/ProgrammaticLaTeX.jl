@@ -1,4 +1,4 @@
-module ProgrammaticLaTeX
+module Preambles
 
 export AbstractDecl, Author, DocumentClass, Title, Package, Preamble
 export build_preamble

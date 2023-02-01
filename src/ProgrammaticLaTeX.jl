@@ -1,9 +1,11 @@
+include("Preamble.jl")
+
 module ProgrammaticLaTeX
-using Preamble
+import Preamble
 
 end
 
-
+using .Preamble
 
 
 preamble = Preamble(
