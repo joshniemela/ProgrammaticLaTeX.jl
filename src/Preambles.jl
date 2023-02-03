@@ -1,25 +1,13 @@
-module Preambles
-
-export AbstractDecl, Author, DocumentClass, Title, Package, Preamble
-export build_preamble, infer_pkg_deps
-
 using Dates
 using Pipe
 
 # Stuff that isn't present in the acutal finished document, contains metadata other things
 abstract type AbstractDecl end
 
-struct DocumentClass <: AbstractDecl
-    class::AbstractString
-    options::Vector{AbstractString}
-end
-DocumentClass(class::AbstractString) = DocumentClass(class, [""]) # If no settings are given
-
 struct Author <: AbstractDecl
     fields::Vector{AbstractString}
 end
 Author(name::AbstractString) = Author([name])
-
 
 struct Title <: AbstractDecl
     text::AbstractString
@@ -45,23 +33,11 @@ end
 struct Preamble
     preamble
     function Preamble(preamble...)
-        if length(filter(x -> x isa DocumentClass, preamble)) != 1
-            error("DocumentClass needs one and only one definition.")
-        end
-
         if length(filter(x -> x isa Date, preamble)) > 1
             error("Date cannot have more than one definition.")
         end
 
         new(merge_authors(preamble))
-    end
-end
-
-function write_decl(docclass::DocumentClass)
-    if isempty(docclass.options)
-        "\\documentclass{$(docclass.class)}"
-    else
-        "\\documentclass[$(join(docclass.options, ','))]{$(docclass.class)}"
     end
 end
 
@@ -79,10 +55,15 @@ write_decl(package::Package) = "\\usepackage{$(package.pkgname)}"
 
 build_preamble(declarations) = @pipe declarations .|> write_decl |> join(_, "\n")
 
+const default_pkgs = ["hyperref", "fancyhdr"] .|> Package
 
-function infer_pkg_deps(content)::Vector{Package}
-    Vector{Package}() # NOT IMPLEMENTED
+"""
+Configure the stuff for geometry, margins etc etc etc
+"""
+function mk_geometry_pkg(stuff)
+    stuff
 end
 
-
+function infer_pkg_deps(content)::Vector{Package}
+    Vector{Package}() # NOT IMPLEMENTEConfigure the stuff for geometry, margins etc etc etcD
 end
