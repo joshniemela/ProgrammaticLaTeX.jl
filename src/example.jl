@@ -12,7 +12,4 @@ preamble = Preamble(
   Title("Test 101")
 )
 
-function julia2latex(preamble::Preamble, body::Body; kwargs...)
 
-
-end

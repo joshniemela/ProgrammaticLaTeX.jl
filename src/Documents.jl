@@ -1,23 +1,39 @@
 module Documents
+
+using MLStyle
 include("Preambles.jl")
 import .Preambles
 
+
 abstract type AbstractItem end
 
+struct Body
+    items
+end
+
 struct TOC <: AbstractItem end
+write_item(::TOC, parents) = "\\tableofcontents"
+
+struct MakeTitle <: AbstractItem end
+write_item(::MakeTitle, parents) = "\\maketitle"
 
 struct Section <: AbstractItem
+    name
     content
 end
 
+@data Environment<:AbstractItem begin
+    Align
+
+
 struct Document
     preamble::Preambles.Preamble
-    content
-    function Document(preamble, content)
+    body::Body
+    function Document(preamble, body)
         if Preambles.infer_pkg_deps ∈ preamble
-            new(append!(preamble, Preambles.infer_pkg_deps(content)), content)
+            new(append!(preamble, Preambles.infer_pkg_deps(body)), body)
         else
-            new(preamble, content)
+            new(preamble, body)
         end
     end
 end
@@ -25,14 +41,8 @@ end
 
 function julia2latex(document::Document)
     preamble_text = Preambles.build_preamble(document.preamble)
-
-    content = "\\begin{document}\n"
-
-    if any(x -> x isa Preambles.Title, document.preamble)
-        content *= "\\maketitle\n"
-    end
-
-    "$(preamble_text)\n$(content)\\end{document}"
+    body_text = ""
+    "\\begin{document}\n$(preamble_text)\n$(body_text)\\end{document}"
 end
 
 
