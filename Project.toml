@@ -9,6 +9,7 @@ MLStyle = "d8e11817-5142-5d16-987a-aa16d5891078"
 Pipe = "b98c9c47-44ae-5843-9183-064241ee97a0"
 
 [compat]
+MLStyle = "0.4"
 julia = "1.8"
 
 [extras]
