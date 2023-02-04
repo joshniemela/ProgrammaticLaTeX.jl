@@ -4,6 +4,7 @@ export buildPDF, julia2latex
 using MLStyle
 using Dates
 using Pipe
+using Plots
 
 include("Preamble.jl")
 include("Body.jl")

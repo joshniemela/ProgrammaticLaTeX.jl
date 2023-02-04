@@ -4,7 +4,6 @@ export Body
 
 export align, eq, equation, figure
 
-using Plots
 @data AbstractItem begin
     TOC()
     MakeTitle()
