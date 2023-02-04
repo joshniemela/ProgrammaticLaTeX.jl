@@ -1,3 +1,8 @@
+export AbstractItem, TOC, MakeTitle, Section, Image, Plot, Style
+export Environment, Raw
+export Body
+
+export align, eq, equation, figure
 @data AbstractItem begin
     TOC()
     MakeTitle()
@@ -8,11 +13,12 @@
     Environment(env::Symbol, content)
     Raw(text)
 end
-
+Section(name, args...) = Section(name, [args...])
 
 struct Body
     content
 end
+Body(args...) = Body([args...])
 
 # Broadcast interpret_item recursively if an iterable is given
 function interpret_item(content::AbstractVector; numbered=true, depth=0)
@@ -43,12 +49,13 @@ function interpret_item(env::Environment; kwargs...)
     star = kwargs[:numbered] ? "" : "*"
     """
     \\begin{$envName$star}
-        $(env.content)
+    $(interpret_item(env.content))
     \\end{$envName$star}
     """
 end
 
 interpret_item(raw::Raw; kwargs...) = raw.text
+interpret_item(raw::String; kwargs...) = raw.text
 
 interpret_item(::TOC, kwargs...) = "\\tableofcontents"
 

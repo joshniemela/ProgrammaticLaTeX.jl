@@ -1,3 +1,7 @@
+export AbstractDecl, Author, Title, Package, Preamble
+
+export default_pkgs #, infer_pkg_deps
+
 # Stuff that isn't present in the acutal finished document, contains metadata other things
 abstract type AbstractDecl end
 
@@ -62,5 +66,5 @@ function mk_geometry_pkg(stuff)
 end=#
 
 function infer_pkg_deps(content)::Vector{Package}
-    Vector{Package}() # NOT IMPLEMENTED
+    Vector{Package}(Package("THIS IS NOT IMPLEMENTED")) # NOT IMPLEMENTED
 end
