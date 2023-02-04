@@ -55,7 +55,7 @@ function interpret_item(env::Environment; kwargs...)
 end
 
 interpret_item(raw::Raw; kwargs...) = raw.text
-interpret_item(raw::String; kwargs...) = raw.text
+interpret_item(raw::String; kwargs...) = raw
 
 interpret_item(::TOC, kwargs...) = "\\tableofcontents"
 
