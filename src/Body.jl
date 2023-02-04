@@ -9,7 +9,7 @@ export align, eq, equation, figure
     MakeTitle()
     Section(name, content)
     Image(image)
-    Plot(plot)
+    #Plot(plot)
     Style(style)
     Environment(env::Symbol, content)
     Raw(text)
@@ -62,9 +62,9 @@ interpret_item(::TOC, kwargs...) = "\\tableofcontents"
 
 interpret_item(::MakeTitle; kwargs...) = "\\maketitle"
 
-function interpret_item(plot::Plot; kwargs...)
+function interpret_item(plot::Plots.Plot; kwargs...)
     path = tempname()
-    savefig(plot.plot, path)
+    savefig(plot, path)
     "\\includegraphics{$path}"
 end
 

@@ -24,7 +24,7 @@ body = Body(
         Section("Second section nested within the first",
             Raw("Stuff here"),
             figure(
-                Plot(plot(x -> x^2))
+                plot(x -> x^2)
             )
         )
     )
