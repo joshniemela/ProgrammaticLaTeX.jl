@@ -1,6 +1,3 @@
-using Dates
-using Pipe
-
 # Stuff that isn't present in the acutal finished document, contains metadata other things
 abstract type AbstractDecl end
 
@@ -55,15 +52,15 @@ write_decl(package::Package) = "\\usepackage{$(package.pkgname)}"
 
 build_preamble(declarations) = @pipe declarations .|> write_decl |> join(_, "\n")
 
-const default_pkgs = ["hyperref", "fancyhdr"] .|> Package
+const default_pkgs = ["graphicx", "microtype", "amsmath", "amssymb", "hyperref", "fancyhdr", "unicode-math"] .|> Package
 
-"""
+#="""
 Configure the stuff for geometry, margins etc etc etc
 """
 function mk_geometry_pkg(stuff)
     stuff
-end
+end=#
 
 function infer_pkg_deps(content)::Vector{Package}
-    Vector{Package}() # NOT IMPLEMENTEConfigure the stuff for geometry, margins etc etc etcD
+    Vector{Package}() # NOT IMPLEMENTED
 end
