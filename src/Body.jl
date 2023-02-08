@@ -1,25 +1,8 @@
-export AbstractItem, TOC, MakeTitle, Section, Image, Plot, Style
-export Environment, Raw
-export Body
-
-export align, eq, equation, figure
-
-@data AbstractItem begin
-    TOC()
-    MakeTitle()
-    Section(name, content)
-    Image(image)
-    #Plot(plot)
-    Style(style)
-    Environment(env::Symbol, content)
-    Raw(text)
+struct LaTeXEnv{T, C, V}
+  symbol::Val{T}
+  content::C
+  args::Dict{String, V}
 end
-Section(name, args...) = Section(name, [args...])
-
-struct Body
-    content
-end
-Body(args...) = Body([args...])
 
 # Broadcast interpret_item recursively if an iterable is given
 function interpret_item(content::AbstractVector; numbered=true, depth=0)
