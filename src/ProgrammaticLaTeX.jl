@@ -4,10 +4,12 @@ export buildPDF, julia2latex
 using MLStyle
 using Dates
 using Pipe
-using Plots
+#using Plots
 
 include("Preamble.jl")
+export Author, Title, Package, Preamble, build_preamble
 include("Body.jl")
+export LaTeXEnv, LaTeXArg, LaTeXArgs, Section, TOC, MakeTitle
 
 function julia2latex(preamble::Preamble, body::Body; class=:article, kwargs...)
     preamble_str = build_preamble(preamble.preamble)

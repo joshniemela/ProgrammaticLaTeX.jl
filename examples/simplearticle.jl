@@ -2,12 +2,12 @@ using ProgrammaticLaTeX
 using Plots # for plot()
 using Dates # for today()
 using Pipe
-preamble = Preamble(
+preamble = Preamble([
     Author(["Josh", "University of Copenhagen"]),
     Author(["Other author", "Something"]),
     today(),
-    Title("Simple document with Julia"),
-    default_pkgs...
+    Title("Simple document with Julia")],
+    LaTeXArgs()
 )
 
 body = Body(

@@ -1,5 +1,4 @@
 import Base.show
-using MLStyle
 struct LaTeXEnv{T, C}
   symbol::Val{T}
   content::C
