@@ -1,4 +1,3 @@
-import Base.show
 using MLStyle
 struct LaTeXEnv{T, C}
   symbol::Val{T}
@@ -6,7 +5,6 @@ struct LaTeXEnv{T, C}
   args::Dict{String, <: Union{Int, Bool}}
   numbered::F where {F <: Union{Nothing, Bool}}
 end
-LaTeXEnv(symbol::Symbol, content, args) = LaTeXEnv(Val(symbol), content, args)
 
 struct Section{T}
     name::String
@@ -14,19 +12,19 @@ struct Section{T}
     numbered::F where {F <: Union{Nothing, Bool}}
 end
 
-struct TOC end
-interpret_item(::TOC) = "\\tableofcontents"
+LaTeXEnv(symbol::Symbol, content, args) = LaTeXEnv(Val(symbol), content, args)
+LaTeXEnv(Val(symbol), contents) = LaTeXEnv(Val(symbol), content, args)
 
-struct MakeTitle end
-interpret_item(::MakeTitle) = "\\maketitle"
 
-show(io::IO, ::MIME"text/plain", x::Union{Section, LaTeXEnv}) = print(io, interpret_item(x))
 
-""" If not a section then just dispatch to 1 arg version of interpret"""
-interpret_item(x, _) = interpret_item(x)
-interpret_item(x::String) = x
-function interpret_item(sec::Section, depth=1)
-    star = sec.numbered ? "" : "*"
+struct NumberedEnv{T <: LaTeXEnv}
+    env::T
+end
+
+interpret_item(x, depth) = interpret_item(x)
+function interpret_item(env::LaTeXEnv{:section, C} where {C}, depth=0)
+    name, content = env.content
+    star = env.numbered ? "" : "*"
     section_name = @match depth begin
         1 => "section"
         2 => "subsection"
@@ -36,13 +34,10 @@ function interpret_item(sec::Section, depth=1)
         _ => throw(ArgumentError("Indent level: $depth not supported by LaTeX"))
     end
 
-    section_head = join(["\\", section_name, star, "{$(sec.name)}"])
+    section_head = join(["\\", section_name, star, "{$name}"])
 
-    join([section_head, "\n", interpret_item(sec.content, depth+1)])
+    join([section_head, "\n", interpret_item(content, depth+1)])
 end
-
-""" Map interpret across any vector like content """
-interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 #=
 # Broadcast interpret_item recursively if an iterable is given
 function interpret_item(content::AbstractVector; numbered=true, depth=0)
@@ -78,6 +73,12 @@ function interpret_item(env::Environment; kwargs...)
     """
 end
 
+interpret_item(raw::Raw; kwargs...) = raw.text
+interpret_item(raw::String; kwargs...) = raw
+
+interpret_item(::TOC, kwargs...) = "\\tableofcontents"
+
+interpret_item(::MakeTitle; kwargs...) = "\\maketitle"
 
 function interpret_item(plot::Plots.Plot; kwargs...)
     path = tempname()
