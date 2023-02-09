@@ -2,10 +2,10 @@ import Base.show
 struct LaTeXEnv{T, C}
   symbol::Val{T}
   content::C
-  args::Dict{String, <: Union{Int, Bool}}
+  args::LaTeXArgs
   numbered::F where {F <: Union{Nothing, Bool}}
 end
-LaTeXEnv(symbol::Symbol, content, args) = LaTeXEnv(Val(symbol), content, args)
+LaTeXEnv(symbol::Symbol, remaining...) = LaTeXEnv(Val(symbol), remaining...)
 
 struct Section{T}
     name::String
@@ -43,7 +43,7 @@ end
 """ Map interpret across any vector like content """
 interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 
-function interpret_item(env::Environment{:plot, C} where {C}
+function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
     println("this is a plot")
 end
 
@@ -52,7 +52,7 @@ end
 ##    savefig(plot, path)
 #    "\\includegraphics{$path}"
 #end
-
+#=
 align(content) = Environment(:align, content)
 eq(content) = Environment(:equation, content)
 equation(content) = Environment(:equation, content)
