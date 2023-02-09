@@ -43,12 +43,15 @@ end
 """ Map interpret across any vector like content """
 interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 
-#=
-function interpret_item(plot::Plots.Plot; kwargs...)
-    path = tempname()
-    savefig(plot, path)
-    "\\includegraphics{$path}"
+function interpret_item(env::Environment{:plot, C} where {C}
+    println("this is a plot")
 end
+
+#function interpret_item(plot::Plots.Plot; kwargs...)
+#    path = tempname()
+##    savefig(plot, path)
+#    "\\includegraphics{$path}"
+#end
 
 align(content) = Environment(:align, content)
 eq(content) = Environment(:equation, content)
