@@ -1,3 +1,4 @@
+using Plots
 import Base.show
 struct LaTeXEnv{T, C}
   symbol::Val{T}
@@ -19,7 +20,7 @@ interpret_item(::TOC) = "\\tableofcontents"
 struct MakeTitle end
 interpret_item(::MakeTitle) = "\\maketitle"
 
-show(io::IO, ::MIME"text/plain", x::Union{Section, LaTeXEnv}) = print(io, interpret_item(x))
+#show(io::IO, ::MIME"text/plain", x::Union{Section, LaTeXEnv}) = print(io, interpret_item(x))
 
 """ If not a section then just dispatch to 1 arg version of interpret"""
 interpret_item(x, _) = interpret_item(x)
@@ -60,12 +61,16 @@ function interpret_item(env::LaTeXEnv{:figure, String})
     placement = haskey(args, "placement") ? args["placement"] : ""
     width = haskey(args, "width") ? "width=$(args["width"])" : ""
     height = haskey(args, "height") ? "height=$(args["height"])" : ""
+    caption = haskey(args, "caption") ? "\\caption{$(args["caption"])}" : ""
+    label = haskey(args, "label") ? "\\label{$(args["label"])}" : ""
 
     graphicArgs = join(filter(!isempty, [width, height]), ",")
-    join([
-    "\\begin{figure}$placement",
+    join(filter(!isempty,[
+    "\\begin{figure}[$placement]",
     "\\centering",
     "\\includegraphics[$graphicArgs]{$path}",
-    "\end{figure}"],
-    "\n")
+    caption,
+    label,
+    "\\end{figure}"
+    ]), "\n")
 end
