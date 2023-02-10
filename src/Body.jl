@@ -44,7 +44,7 @@ end
 """ Map interpret across any vector like content """
 interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 
-function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
+#=function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
     args = env.args
     plot = env.content
 
@@ -52,7 +52,15 @@ function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
     savefig(plot, path)
 
     interpret_item(LaTeXEnv(:figure, path, args, env.numbered))
+end =#
+
+function interpret_item(plot::Plots.plot)
+    path = tempname()
+    savefig(plot, path)
+
+    path
 end
+
 
 """ Takes args: width, height, alignment, placement """
 function interpret_item(env::LaTeXEnv{:figure, String})
@@ -66,11 +74,11 @@ function interpret_item(env::LaTeXEnv{:figure, String})
 
     graphicArgs = join(filter(!isempty, [width, height]), ",")
     join(filter(!isempty,[
-    "\\begin{figure}[$placement]",
-    "\\centering",
-    "\\includegraphics[$graphicArgs]{$path}",
-    caption,
-    label,
-    "\\end{figure}"
+        "\\begin{figure}[$placement]",
+        "\\centering",
+        "\\includegraphics[$graphicArgs]{$(interpret_item(path))}",
+        interpret_item(caption),
+        interpret_item(label),
+        "\\end{figure}"
     ]), "\n")
 end
