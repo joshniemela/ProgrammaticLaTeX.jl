@@ -44,17 +44,28 @@ end
 interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 
 function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
-    println("this is a plot")
+    args = env.args
+    plot = env.content
+
+    path = tempname()
+    savefig(plot, path)
+
+    interpret_item(LaTeXEnv(:figure, path, args, env.numbered))
 end
 
-#function interpret_item(plot::Plots.Plot; kwargs...)
-#    path = tempname()
-##    savefig(plot, path)
-#    "\\includegraphics{$path}"
-#end
-#=
-align(content) = Environment(:align, content)
-eq(content) = Environment(:equation, content)
-equation(content) = Environment(:equation, content)
-figure(content) = Environment(:figure, content)
-=#
+""" Takes args: width, height, alignment, placement """
+function interpret_item(env::LaTeXEnv{:figure, String})
+    path = env.content
+    args = env.args
+    placement = haskey(args, "placement") ? args["placement"] : ""
+    width = haskey(args, "width") ? "width=$(args["width"])" : ""
+    height = haskey(args, "height") ? "height=$(args["height"])" : ""
+
+    graphicArgs = join(filter(!isempty, [width, height]), ",")
+    join([
+    "\\begin{figure}$placement",
+    "\\centering",
+    "\\includegraphics[$graphicArgs]{$path}",
+    "\end{figure}"],
+    "\n")
+end
