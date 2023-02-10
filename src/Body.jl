@@ -1,12 +1,8 @@
 using Plots
 import Base.show
-struct LaTeXEnv{T, C}
-  symbol::Val{T}
-  content::C
-  args::LaTeXArgs
-  numbered::F where {F <: Union{Nothing, Bool}}
-end
-LaTeXEnv(symbol::Symbol, remaining...) = LaTeXEnv(Val(symbol), remaining...)
+abstract type LaTeXEnv end
+
+#LaTeXEnv(symbol::Symbol, remaining...) = LaTeXEnv(Val(symbol), remaining...)
 
 struct Section{T}
     name::String
@@ -54,7 +50,7 @@ interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, 
     interpret_item(LaTeXEnv(:figure, path, args, env.numbered))
 end =#
 
-function interpret_item(plot::Plots.plot)
+function interpret_item(plot::Plots.Plot)
     path = tempname()
     savefig(plot, path)
 
@@ -63,7 +59,7 @@ end
 
 
 """ Takes args: width, height, alignment, placement """
-function interpret_item(env::LaTeXEnv{:figure, String})
+function interpret_item(env::LaTeXEnv{:figure, C}) where {C}
     path = env.content
     args = env.args
     placement = haskey(args, "placement") ? args["placement"] : ""
