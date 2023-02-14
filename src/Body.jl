@@ -1,8 +1,11 @@
-using Plots
 import Base.show
-abstract type LaTeXEnv end
-
-#LaTeXEnv(symbol::Symbol, remaining...) = LaTeXEnv(Val(symbol), remaining...)
+struct LaTeXEnv{T, C}
+  symbol::Val{T}
+  content::C
+  args::LaTeXArgs
+  numbered::F where {F <: Union{Nothing, Bool}}
+end
+LaTeXEnv(symbol::Symbol, remaining...) = LaTeXEnv(Val(symbol), remaining...)
 
 struct Section{T}
     name::String
@@ -16,7 +19,7 @@ interpret_item(::TOC) = "\\tableofcontents"
 struct MakeTitle end
 interpret_item(::MakeTitle) = "\\maketitle"
 
-#show(io::IO, ::MIME"text/plain", x::Union{Section, LaTeXEnv}) = print(io, interpret_item(x))
+show(io::IO, ::MIME"text/plain", x::Union{Section, LaTeXEnv}) = print(io, interpret_item(x))
 
 """ If not a section then just dispatch to 1 arg version of interpret"""
 interpret_item(x, _) = interpret_item(x)
@@ -40,41 +43,18 @@ end
 """ Map interpret across any vector like content """
 interpret_item(items::Vector{T}, depth) where {T} = join(interpret_item.(items, depth), "\n")
 
-#=function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
-    args = env.args
-    plot = env.content
-
-    path = tempname()
-    savefig(plot, path)
-
-    interpret_item(LaTeXEnv(:figure, path, args, env.numbered))
-end =#
-
-function interpret_item(plot::Plots.Plot)
-    path = tempname()
-    savefig(plot, path)
-
-    path
+function interpret_item(env::LaTeXEnv{:plot, C}) where {C}
+    println("this is a plot")
 end
 
-
-""" Takes args: width, height, alignment, placement """
-function interpret_item(env::LaTeXEnv{:figure, C}) where {C}
-    path = env.content
-    args = env.args
-    placement = haskey(args, "placement") ? args["placement"] : ""
-    width = haskey(args, "width") ? "width=$(args["width"])" : ""
-    height = haskey(args, "height") ? "height=$(args["height"])" : ""
-    caption = haskey(args, "caption") ? "\\caption{$(args["caption"])}" : ""
-    label = haskey(args, "label") ? "\\label{$(args["label"])}" : ""
-
-    graphicArgs = join(filter(!isempty, [width, height]), ",")
-    join(filter(!isempty,[
-        "\\begin{figure}[$placement]",
-        "\\centering",
-        "\\includegraphics[$graphicArgs]{$(interpret_item(path))}",
-        interpret_item(caption),
-        interpret_item(label),
-        "\\end{figure}"
-    ]), "\n")
-end
+#function interpret_item(plot::Plots.Plot; kwargs...)
+#    path = tempname()
+##    savefig(plot, path)
+#    "\\includegraphics{$path}"
+#end
+#=
+align(content) = Environment(:align, content)
+eq(content) = Environment(:equation, content)
+equation(content) = Environment(:equation, content)
+figure(content) = Environment(:figure, content)
+=#
