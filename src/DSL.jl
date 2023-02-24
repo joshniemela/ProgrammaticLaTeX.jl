@@ -1,8 +1,3 @@
-macro document(preamble, content...)
-
-end
-
-
 function parseOptions(options)
     optionDict = Dict{Symbol, Union{Symbol, Bool, Nothing, Int}}()
 
@@ -50,16 +45,9 @@ macro section(name, args, content)
     )
 end
 
-
-
-
-preamble=Dict(:numbered=false)
-
-@document preamble begin
-    @section "name" begin
-        content
-    end
+# Does the same as a section but has no name and returns a list of expressions instead of a section
+macro join(content)
+    newContent = filter(x -> !(x isa LineNumberNode), content.args)
+    return :([$(newContent...)])
 end
 
-interpret_item(section, preamble) 
-    interpret_item(section.content, preamble where depth + 1)
