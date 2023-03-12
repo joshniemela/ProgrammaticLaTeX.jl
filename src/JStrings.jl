@@ -3,6 +3,10 @@ struct JString <: AbstractString
     s::String
 end
 
+#=
+TODO:
+The following code might not be able to express half-open set intervals such as (x]
+=#
 function parse_mathmode(str)
     terminators = [' ', '.', ',', ';', ':', '!', '?', '\n', '\t']
     new_str = ""
