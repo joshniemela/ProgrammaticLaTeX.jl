@@ -19,6 +19,8 @@ function parse_mathmode(str)
     while head <= lastindex(str)
         # If ! is found, enter math mode
         if !in_math && str[head] == '!'
+            @info head
+            nextind(str, head) ≥ lastindex(str) && error("Unmatched ! at index $(lastindex(str))")
             # If ( is also found, we're in bracketed math mode
             if str[nextind(str, head)] == '('
                 brackets = 1
@@ -37,7 +39,7 @@ function parse_mathmode(str)
         # Deal with unbracketed math
         if in_math && isnothing(brackets) && str[head] in terminators
             # This is to catch any !'s immediately followed by a terminator
-            if str[head] == '!'
+            if str[prevind(str, head)] == '!'
                 error("Unmatched ! at index $(prevind(str, head, 2))")
             end
             
