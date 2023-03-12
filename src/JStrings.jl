@@ -89,7 +89,12 @@ function parse_jstr(s)
 end
 
 macro J_str(s)
-    return :($s |> parse_jstr)
+    expr = esc(Meta.parse("\"$(escape_string(s))\""))
+    expr.args = map(expr.args) do arg
+        subexpr = Expr(:call, Expr(:., :ProgrammaticLaTeX, QuoteNode(:parse_jstr)), arg)
+        arg isa String ? subexpr : Expr(:string, subexpr)
+    end
+    return expr
 end
 
 function Base.show(io::IO, s::JString)
