@@ -58,7 +58,8 @@ function parse_mathmode(str)
 
             # If bracket == 0, we're done with the math mode
             if brackets == 0
-                new_str *= str[tail:prevind(str, head)] * "\\)"
+                # The closing bracket from the append has been removed because an additional bracket for some reason appears later on in the code.
+                new_str *= str[tail:prevind(str, head)] * "\\"
                 tail = head
                 in_math = false
                 brackets = nothing

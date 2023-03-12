@@ -8,6 +8,9 @@ using Test
         @test J"\frac{1}{2}" == "\\frac{1}{2}"
         @test J"!(\frac{1}{2})" == "\\(\\frac{1}{2}\\)"
         @test J"!n" == "\\(n\\)"
+        @test J"!($(x=2))" == "\\(2\\)"
+        @test J"!()" == "\\(\\)"
+        @test J"!() bla !n bla !(n!)" == "\\(\\) bla \\(n\\) bla \\(n!\\)"
     end
 
     # Assert that it errors when given invalid input
@@ -16,7 +19,6 @@ using Test
     @test_throws ErrorException J"! "
     @test_throws ErrorException J"!("
     @test_throws ErrorException J"!( "
-    @test_throws ErrorException J"!()"
     @test_throws ErrorException J"!(\frac{1}{2}"
     end
 end
