@@ -2,6 +2,8 @@
 struct JString <: AbstractString
     s::String
 end
+jstring(args...) = jstring(string(args...))
+jstring(s::AbstractString) = jstring(String(s))
 
 #=
 TODO:
