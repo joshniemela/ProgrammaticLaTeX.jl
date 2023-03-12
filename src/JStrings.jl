@@ -89,8 +89,8 @@ end
 macro J_str(s)
     expr = esc(Meta.parse("\"$(escape_string(s))\""))
     expr.args = map(expr.args) do arg
-        arg isa String && return Expr(:call, :parse_mathmode, arg)
-        return Expr(:string, Expr(:call, :parse_mathmode, arg))
+        arg isa String && return Expr(:call, :parse_jstr, arg)
+        return Expr(:string, Expr(:call, :parse_jstr, arg))
     end
     return expr
 end
