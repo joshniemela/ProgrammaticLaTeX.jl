@@ -1,3 +1,4 @@
+# Credits to the developers of LaTeXStrings https://github.com/stevengj/LaTeXStrings.jl for various lines of code used in this file.
 struct JString <: AbstractString
     s::String
 end
@@ -75,14 +76,22 @@ function parse_mathmode(str)
 
 end
 
-# exists if we need to make it more complex
-parse_jstr(s) = parse_mathmode(s) |> JString
+function parse_jstr(s)
+    parse_mathmode(s) |> JString
+end
 
 macro J_str(s)
     return :($s |> parse_jstr)
 end
 
-# Credits to the developers of LaTeXStrings https://github.com/stevengj/LaTeXStrings.jl
+function Base.show(io::IO, s::JString)
+    print(io, "J\"")
+    Base.escape_raw_string(io, s.s)
+    print(io, '"')
+end
+
+Base.write(io::IO, s::JString) = write(io, s.s)
+
 Base.firstindex(s::JString) = firstindex(s.s)
 Base.lastindex(s::JString) = lastindex(s.s)
 Base.iterate(s::JString, i::Int) = iterate(s.s, i)
