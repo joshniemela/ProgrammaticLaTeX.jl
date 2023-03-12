@@ -81,3 +81,31 @@ parse_jstr(s) = parse_mathmode(s) |> JString
 macro J_str(s)
     return :($s |> parse_jstr)
 end
+
+# Credits to the developers of LaTeXStrings https://github.com/stevengj/LaTeXStrings.jl
+Base.firstindex(s::JString) = firstindex(s.s)
+Base.lastindex(s::JString) = lastindex(s.s)
+Base.iterate(s::JString, i::Int) = iterate(s.s, i)
+Base.iterate(s::JString) = iterate(s.s)
+Base.nextind(s::JString, i::Int) = nextind(s.s, i)
+Base.prevind(s::JString, i::Int) = prevind(s.s, i)
+Base.eachindex(s::JString) = eachindex(s.s)
+Base.length(s::JString) = length(s.s)
+Base.getindex(s::JString, i::Integer) = getindex(s.s, i)
+Base.getindex(s::JString, i::Int) = getindex(s.s, i) # for method ambig in Julia 0.6
+Base.getindex(s::JString, i::UnitRange{Int}) = getindex(s.s, i)
+Base.getindex(s::JString, i::UnitRange{<:Integer}) = getindex(s.s, i)
+Base.getindex(s::JString, i::AbstractVector{<:Integer}) = getindex(s.s, i)
+Base.getindex(s::JString, i::AbstractVector{Bool}) = getindex(s.s, i) # for method ambiguity
+Base.codeunit(s::JString, i::Integer) = codeunit(s.s, i)
+Base.codeunit(s::JString) = codeunit(s.s)
+Base.ncodeunits(s::JString) = ncodeunits(s.s)
+Base.codeunits(s::JString) = codeunits(s.s)
+Base.sizeof(s::JString) = sizeof(s.s)
+Base.isvalid(s::JString, i::Integer) = isvalid(s.s, i)
+Base.pointer(s::JString) = pointer(s.s)
+Base.IOBuffer(s::JString) = IOBuffer(s.s)
+Base.unsafe_convert(T::Union{Type{Ptr{UInt8}},Type{Ptr{Int8}},Cstring}, s::JString) = Base.unsafe_convert(T, s.s)
+Base.match(re::Regex, s::JString, idx::Integer, add_opts::UInt32=UInt32(0)) = match(re, s.s, idx, add_opts)
+Base.findnext(re::Regex, s::JString, idx::Integer) = findnext(re, s.s, idx)
+Base.eachmatch(re::Regex, s::JString; overlap = false) = eachmatch(re, s.s; overlap=overlap)
