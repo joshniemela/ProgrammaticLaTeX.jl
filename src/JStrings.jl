@@ -19,10 +19,10 @@ function parse_mathmode(str)
     while head <= lastindex(str)
         # If ! is found, enter math mode
         if !in_math && str[head] == '!'
-            @info head
-            nextind(str, head) ≥ lastindex(str) && error("Unmatched ! at index $(lastindex(str))")
+            nextind(str, head) > lastindex(str) && error("Unmatched ! at index $head")
             # If ( is also found, we're in bracketed math mode
             if str[nextind(str, head)] == '('
+                nextind(str, head, 2) > lastindex(str) && error("Unmatched ! at index $head")
                 brackets = 1
                 new_str *= str[tail:prevind(str, head)] * "\\("
                 head = nextind(str, head)
